@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>音乐菜单</title>
+   <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, "PingFang SC", "Microsoft Yahei", sans-serif;
+    }
+
+    body {
+        background-color: #121217;
+        color: #e0e0e0;
+        padding: 15px;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .back-arrow {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #64b5f6;
+    font-size: 24px;
+    text-decoration: none;
+    z-index: 999;
+    font-weight: bold;
+}
+    .container {
+        width: 100%;
+        max-width: 380px;
+        margin: 30px auto 40px;
+        background-color: #18181f;
+        border-radius: 20px;
+        padding: 24px 20px;
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo-area {
+        text-align: center;
+        margin-bottom: 28px;
+        margin-top: 8px;
+    }
+
+    .logo-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #1976d2, #42a5f5);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin: 0 auto 12px;
+        box-shadow: 0 8px 20px rgba(25, 118, 210, 0.35);
+    }
+
+    .title {
+        font-size: 26px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #64b5f6, #42a5f5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 1px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        color: #5a5a6e;
+        margin-top: 4px;
+        letter-spacing: 2px;
+    }
+
+    .menu-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-start {
+        background: #1e1e28;
+        border: 1.5px solid #2a2a36;
+        color: #e0e0e0;
+        width: 100%;
+        padding: 15px 16px;
+        border-radius: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.25s ease;
+    }
+
+    .btn-start:hover {
+        background: #252535;
+        border-color: #64b5f6;
+        transform: translateX(4px);
+        box-shadow: 0 4px 16px rgba(100, 181, 246, 0.12);
+    }
+
+    .btn-start:active {
+        transform: scale(0.97);
+    }
+
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        background: #252535;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .btn-start:hover .btn-icon {
+        background: #1a2632;
+        box-shadow: 0 0 12px rgba(100, 181, 246, 0.2);
+    }
+
+    .btn-info {
+        flex: 1;
+    }
+
+    .btn-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #e0e0e0;
+        margin-bottom: 2px;
+    }
+
+    .btn-desc {
+        font-size: 11px;
+        color: #6b6b7a;
+    }
+
+    .btn-arrow {
+        color: #3a3a50;
+        font-size: 18px;
+        transition: all 0.25s ease;
+    }
+
+    .btn-start:hover .btn-arrow {
+        color: #64b5f6;
+        transform: translateX(3px);
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 11px;
+        color: #4a4a5a;
+        letter-spacing: 0.5px;
+    }
+
+    .footer span {
+        color: #64b5f6;
+    }
+</style>
+</head>
+<body>
+    <img src="https://acg.yaohud.cn/dm/AI.php" style="width:100%;height:100vh;object-fit:cover;position:fixed;top:0;left:0;z-index:-1;">
+    <a href="index.html" class="back-arrow">‹</a>
+    <div class="container">
+
+        <div class="logo-area">
+            <div class="logo-icon">🎵</div>
+            <div class="title"></div>
+            <div class="subtitle">MUSIC MENU</div>
+        </div>
+
+        <div class="menu-list">
+            <a href="qsmusic.html" class="btn-start">
+                <div class="btn-icon">🥤</div>
+                <div class="btn-info">
+                    <div class="btn-nam/e">汽水音乐</div>
+                    <div class="btn-desc">搜索歌曲 · 在线播放</div>
+                </div>
+                <div class="btn-arrow">›</div>
+            </a>
+            <a href="yinyue.html" class="btn-start">
+                <div class="btn-icon">🎙️</div>
+                <div class="btn-info">
+                    <div class="btn-name">海量音乐</div>
+                    <div class="btn-desc">十分推荐</div>
+                </div>
+                <div class="btn-arrow">›</div>
+            </a>
+        </div>
+
+        <div class="footer">
+        </div>
+    </div>
+</body>
+</html>

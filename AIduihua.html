@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>AI对话 - 御坂API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, "PingFang SC", "Microsoft Yahei", sans-serif;
+        }
+
+        body {
+            background-color: #121217;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            background: #18181f;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #2a2a36;
+            flex-shrink: 0;
+        }
+
+        .back-btn {
+            color: #64b5f6;
+            font-size: 24px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .top-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .setting-btn {
+            width: 34px;
+            height: 34px;
+            background: #1e1e28;
+            border: 1px solid #2a2a36;
+            border-radius: 50%;
+            color: #9e9eae;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: break-word;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-bubble.user {
+            align-self: flex-end;
+            background: #2196f3;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            align-self: flex-start;
+            background: #262630;
+            color: #ddd;
+            border-bottom-left-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        .think-dots {
+            display: inline-flex;
+            gap: 3px;
+            margin-right: 4px;
+        }
+
+        .think-dots span {
+            width: 5px;
+            height: 5px;
+            background: #64b5f6;
+            border-radius: 50%;
+            animation: dotBounce 1.2s infinite;
+        }
+
+        .think-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .think-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        .bottom-bar {
+            background: #18181f;
+            padding: 10px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid #2a2a36;
+            flex-shrink: 0;
+        }
+
+        .msg-input {
+            flex: 1;
+            background: #1e1e28;
+            border: 1px solid #2a2a36;
+            border-radius: 20px;
+            padding: 10px 16px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background: #2196f3;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .setting-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .setting-popup.show {
+            display: flex;
+        }
+
+        .setting-box {
+            background: #1e1e28;
+            border-radius: 14px;
+            padding: 20px;
+            width: 85%;
+            max-width: 340px;
+        }
+
+        .setting-box label {
+            font-size: 12px;
+            color: #888;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+
+        .setting-box label:first-child {
+            margin-top: 0;
+        }
+
+        .setting-box .hint {
+            font-size: 10px;
+            color: #ff9800;
+            margin-bottom: 6px;
+        }
+
+        .setting-box input {
+            width: 100%;
+            background: #121217;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 10px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .setting-box .save-btn {
+            width: 100%;
+            background: #2196f3;
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 10px;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .setting-box .clear-btn {
+            width: 100%;
+            background: #ef5350;
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="AI.html" class="back-btn">‹</a>
+        <div class="top-title">🤖 AI对话</div>
+        <button class="setting-btn" onclick="openSetting()">⚙</button>
+    </div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div class="bottom-bar">
+        <input type="text" id="msgInput" class="msg-input" placeholder="输入消息..." autocomplete="off">
+        <button class="send-btn" onclick="sendMsg()">▶</button>
+    </div>
+
+    <div class="setting-popup" id="settingPopup" onclick="closeSetting(event)">
+        <div class="setting-box" onclick="event.stopPropagation()">
+            <label>🆔 唯一标识符 (id)</label>
+            <div class="hint">建议复杂些，不然可能和别人的AI记忆混合</div>
+            <input type="text" id="idInput" placeholder="留空默认">
+
+            <label>📝 AI的设定 (system)</label>
+            <div class="hint">例如：你是个猫娘，每句话结尾加"喵~"</div>
+            <input type="text" id="systemInput" placeholder="留空默认">
+
+            <button class="save-btn" onclick="saveSetting()">保存</button>
+            <button class="clear-btn" onclick="clearHistory()">清空聊天记录</button>
+        </div>
+    </div>
+
+    <script>
+        const API = 'https://ecyapi.cn/API/ai_chat.php';
+        let sid = localStorage.getItem('ai_id') || '';
+        let ssys = localStorage.getItem('ai_system') || '';
+        let chatHistory = JSON.parse(localStorage.getItem('chat_history') || '[]');
+
+        function $(id) { return document.getElementById(id); }
+
+        function fetchAPI(url, cb) {
+            fetch(url).then(r => r.text()).then(t => {
+                let d; try { d = JSON.parse(t); } catch(e) { d = t; }
+                cb(d);
+            }).catch(e => cb(null));
+        }
+
+        function addMsg(text, cls) {
+            const div = document.createElement('div');
+            div.className = 'chat-bubble ' + cls;
+            div.innerText = text;
+            $('chatArea').appendChild(div);
+            $('chatArea').scrollTop = $('chatArea').scrollHeight;
+        }
+
+        function saveHistory() {
+            localStorage.setItem('chat_history', JSON.stringify(chatHistory));
+        }
+
+        function loadHistory() {
+            if (chatHistory.length === 0) {
+                addMsg('👋 你好！我是AI助手，有什么可以帮你的吗？', 'ai');
+                chatHistory.push({ text: '👋 你好！我是AI助手，有什么可以帮你的吗？', type: 'ai' });
+                saveHistory();
+            } else {
+                chatHistory.forEach(item => {
+                    addMsg(item.text, item.type);
+                });
+            }
+        }
+
+        function sendMsg() {
+            const msg = $('msgInput').value.trim();
+            if (!msg) return;
+            $('msgInput').value = '';
+            addMsg(msg, 'user');
+            chatHistory.push({ text: msg, type: 'user' });
+            saveHistory();
+
+            const thinkDiv = document.createElement('div');
+            thinkDiv.className = 'chat-bubble ai';
+            thinkDiv.id = 'thinkBubble';
+            thinkDiv.innerHTML = '<span class="think-dots"><span></span><span></span><span></span></span>思考中...';
+            $('chatArea').appendChild(thinkDiv);
+            $('chatArea').scrollTop = $('chatArea').scrollHeight;
+
+            let url = `${API}?message=${encodeURIComponent(msg)}`;
+            if (sid) url += `&id=${encodeURIComponent(sid)}`;
+            if (ssys) url += `&system=${encodeURIComponent(ssys)}`;
+
+            fetchAPI(url, function(data) {
+                const tb = document.getElementById('thinkBubble');
+                if (tb) tb.remove();
+
+                let reply = null;
+                if (typeof data === 'string') {
+                    reply = data;
+                } else if (data) {
+                    reply = data.message || data.reply || data.answer || data.msg || data.text || data.content;
+                    if (!reply && data.data) {
+                        reply = data.data.message || data.data.reply || data.data;
+                    }
+                }
+                if (reply && typeof reply === 'string') {
+                    addMsg(reply, 'ai');
+                    chatHistory.push({ text: reply, type: 'ai' });
+                    saveHistory();
+                } else {
+                    addMsg('出错了，再试一下吧', 'ai');
+                }
+            });
+        }
+
+        function openSetting() {
+            $('idInput').value = sid;
+            $('systemInput').value = ssys;
+            $('settingPopup').classList.add('show');
+        }
+
+        function closeSetting(e) {
+            if (e.target === $('settingPopup')) $('settingPopup').classList.remove('show');
+        }
+
+        function saveSetting() {
+            sid = $('idInput').value.trim();
+            ssys = $('systemInput').value.trim();
+            localStorage.setItem('ai_id', sid);
+            localStorage.setItem('ai_system', ssys);
+            $('settingPopup').classList.remove('show');
+        }
+
+        function clearHistory() {
+            chatHistory = [];
+            localStorage.removeItem('chat_history');
+            $('chatArea').innerHTML = '';
+            addMsg('👋 你好！我是AI助手，有什么可以帮你的吗？', 'ai');
+            chatHistory.push({ text: '👋 你好！我是AI助手，有什么可以帮你的吗？', type: 'ai' });
+            saveHistory();
+            $('settingPopup').classList.remove('show');
+        }
+
+        $('msgInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
+        });
+
+        loadHistory();
+    </script>
+</body>
+</html>
