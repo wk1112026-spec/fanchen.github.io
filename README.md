@@ -1,1 +1,1 @@
-fanchen.guthub.io
+fanchen.nb666.com
